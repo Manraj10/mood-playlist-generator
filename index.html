@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mood-Based Playlist Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="card">
+        <p class="eyebrow">Mood-Based Playlist Generator</p>
+        <h1>Find music that fits how you feel.</h1>
+        <p class="intro">
+          Choose a mood and energy level to get a playlist style recommendation.
+        </p>
+
+        <form id="playlist-form">
+          <label for="mood">Mood</label>
+          <select id="mood" name="mood">
+            <option value="focused">Focused</option>
+            <option value="happy">Happy</option>
+            <option value="calm">Calm</option>
+            <option value="sad">Reflective</option>
+            <option value="confident">Confident</option>
+          </select>
+
+          <label for="energy">Energy level</label>
+          <input id="energy" name="energy" type="range" min="1" max="5" value="3" />
+          <p id="energy-label">Energy: Medium</p>
+
+          <button type="submit">Generate Playlist</button>
+        </form>
+      </section>
+
+      <section class="card result" id="result">
+        <p class="eyebrow">Recommendation</p>
+        <h2 id="playlist-name">Pick your mood to begin</h2>
+        <p id="playlist-description">
+          Your playlist style, sound profile, and listening advice will show up here.
+        </p>
+        <ul id="playlist-traits"></ul>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
