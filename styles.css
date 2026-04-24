@@ -106,3 +106,20 @@ button:hover {
   padding-left: 18px;
   color: var(--muted);
 }
+
+.history {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.history-title {
+  margin: 0 0 10px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+#history-list {
+  margin: 0;
+  padding-left: 18px;
+}

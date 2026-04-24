@@ -4,6 +4,7 @@ const playlistForm = document.getElementById("playlist-form");
 const playlistName = document.getElementById("playlist-name");
 const playlistDescription = document.getElementById("playlist-description");
 const playlistTraits = document.getElementById("playlist-traits");
+const historyList = document.getElementById("history-list");
 
 const energyLabels = {
   1: "Very Low",
@@ -89,6 +90,32 @@ function renderRecommendation(mood, energyValue) {
   playlistTraits.innerHTML = recommendation.traits
     .map((trait) => `<li>${trait}</li>`)
     .join("");
+
+  saveHistory({
+    mood,
+    energy: energyLabels[energyValue],
+    playlist: recommendation.name,
+  });
+  renderHistory();
+}
+
+function getHistory() {
+  return JSON.parse(localStorage.getItem("playlist-history") || "[]");
+}
+
+function saveHistory(entry) {
+  const nextHistory = [entry, ...getHistory()].slice(0, 5);
+  localStorage.setItem("playlist-history", JSON.stringify(nextHistory));
+}
+
+function renderHistory() {
+  const items = getHistory();
+  historyList.innerHTML = items
+    .map(
+      (item) =>
+        `<li><strong>${item.playlist}</strong> for a ${item.energy.toLowerCase()}-energy ${item.mood} mood</li>`
+    )
+    .join("");
 }
 
 energyInput.addEventListener("input", updateEnergyLabel);
@@ -100,3 +127,4 @@ playlistForm.addEventListener("submit", (event) => {
 });
 
 updateEnergyLabel();
+renderHistory();

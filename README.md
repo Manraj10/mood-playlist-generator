@@ -1,33 +1,34 @@
 # Mood-Based Playlist Generator
 
-A front-end project that recommends a playlist style based on a user's mood and energy level. This project is designed to show user-focused logic, lightweight personalization, and clean browser-based interaction without needing a backend.
+A small front-end app that maps mood and energy level to a playlist recommendation. The project is intentionally simple on the stack side and more focused on interaction design, recommendation rules, and clean client-side state handling.
 
-## Why this project matters
+## Overview
 
-This project demonstrates:
+The app lets a user:
 
-- translating user input into recommendations
-- simple client-side decision logic
-- clean UI structure with HTML, CSS, and JavaScript
-- a fun, consumer-facing software concept
+- choose a mood
+- set an energy level
+- generate a playlist style recommendation
+- see the traits behind that recommendation
+- keep a short history of recent picks in local storage
 
-## Tech stack
+## Built with
 
 - HTML
 - CSS
 - JavaScript
 
-## Features
+## What it does
 
-- select a mood and energy level
-- generate a playlist recommendation
-- display song characteristics and listening suggestions
-- instantly try different combinations
+- uses client-side rule logic to map inputs to recommendations
+- updates the UI instantly with no backend
+- stores recent recommendations in local storage
+- keeps the interaction simple and easy to try repeatedly
 
-## Run locally
+## Running locally
 
 Open `index.html` in a browser.
 
-## Resume-ready description
+## Notes
 
-Built a browser-based recommendation app using JavaScript that maps mood and energy input to personalized playlist suggestions, with client-side logic for recommendation rules and user interaction.
+This project is deliberately browser-only. It was built as a compact way to explore recommendation logic, state updates, and user-facing UI polish without introducing a backend layer.
