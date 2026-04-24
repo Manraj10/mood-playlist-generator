@@ -8,11 +8,11 @@
   </head>
   <body>
     <main class="app">
-      <section class="card">
+      <section class="card panel">
         <p class="eyebrow">Mood-Based Playlist Generator</p>
-        <h1>Find music that fits how you feel.</h1>
+        <h1>Build a song list from mood, energy, and a live music catalog.</h1>
         <p class="intro">
-          Choose a mood and energy level to get a playlist style recommendation.
+          This version uses Apple's iTunes Search API to turn mood-based prompts into real song suggestions.
         </p>
 
         <form id="playlist-form">
@@ -29,21 +29,22 @@
           <input id="energy" name="energy" type="range" min="1" max="5" value="3" />
           <p id="energy-label">Energy: Medium</p>
 
+          <label for="custom-query">Optional artist or keyword</label>
+          <input id="custom-query" name="customQuery" type="text" placeholder="SZA, lo-fi, indie pop..." />
+
           <button type="submit">Generate Playlist</button>
         </form>
       </section>
 
-      <section class="card result" id="result">
+      <section class="card result">
         <p class="eyebrow">Recommendation</p>
         <h2 id="playlist-name">Pick your mood to begin</h2>
         <p id="playlist-description">
-          Your playlist style, sound profile, and listening advice will show up here.
+          Your playlist concept, live search query, and track list will show up here.
         </p>
+        <p id="status" class="status"></p>
         <ul id="playlist-traits"></ul>
-        <div class="history">
-          <p class="history-title">Recent picks</p>
-          <ul id="history-list"></ul>
-        </div>
+        <div id="tracks" class="tracks"></div>
       </section>
     </main>
 

@@ -1,12 +1,12 @@
 :root {
   color-scheme: light;
-  --bg: #f8f4ed;
-  --card: #fffaf3;
-  --ink: #1d2a35;
+  --bg: #f7f2e9;
+  --card: #fffaf2;
+  --ink: #1d2733;
   --muted: #5f6b73;
-  --accent: #d96c3d;
-  --accent-dark: #a44922;
-  --line: #ead9c6;
+  --accent: #d66b37;
+  --accent-dark: #9f4620;
+  --line: #ead6c0;
 }
 
 * {
@@ -17,15 +17,15 @@ body {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
   background:
-    radial-gradient(circle at top left, #ffe5d3, transparent 30%),
-    linear-gradient(180deg, #f5efe6, var(--bg));
+    radial-gradient(circle at top left, #ffe2cc, transparent 30%),
+    linear-gradient(180deg, #f8f1e8, var(--bg));
   color: var(--ink);
 }
 
 .app {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 420px));
+  grid-template-columns: minmax(300px, 380px) minmax(320px, 760px);
   gap: 24px;
   align-content: center;
   justify-content: center;
@@ -57,7 +57,8 @@ h2 {
 
 .intro,
 #playlist-description,
-#energy-label {
+#energy-label,
+.status {
   color: var(--muted);
 }
 
@@ -75,19 +76,19 @@ select,
 input,
 button {
   width: 100%;
+  font: inherit;
 }
 
 select,
-input[type="range"] {
-  accent-color: var(--accent);
-}
-
-select,
+input[type="text"],
 button {
   padding: 12px 14px;
   border-radius: 14px;
   border: 1px solid var(--line);
-  font: inherit;
+}
+
+input[type="range"] {
+  accent-color: var(--accent);
 }
 
 button {
@@ -101,25 +102,56 @@ button:hover {
   background: var(--accent-dark);
 }
 
-.result ul {
+#playlist-traits {
   margin: 16px 0 0;
   padding-left: 18px;
   color: var(--muted);
 }
 
-.history {
-  margin-top: 22px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
+.tracks {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
 }
 
-.history-title {
-  margin: 0 0 10px;
+.track-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.track-card img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.track-copy {
+  padding: 12px;
+}
+
+.track-copy h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.track-copy p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.track-copy a {
+  color: var(--accent-dark);
+  text-decoration: none;
   font-weight: 700;
-  color: var(--ink);
 }
 
-#history-list {
-  margin: 0;
-  padding-left: 18px;
+@media (max-width: 980px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
 }

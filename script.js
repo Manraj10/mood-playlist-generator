@@ -4,7 +4,8 @@ const playlistForm = document.getElementById("playlist-form");
 const playlistName = document.getElementById("playlist-name");
 const playlistDescription = document.getElementById("playlist-description");
 const playlistTraits = document.getElementById("playlist-traits");
-const historyList = document.getElementById("history-list");
+const tracksEl = document.getElementById("tracks");
+const statusEl = document.getElementById("status");
 
 const energyLabels = {
   1: "Very Low",
@@ -14,65 +15,75 @@ const energyLabels = {
   5: "Very High",
 };
 
-const recommendations = {
+const moodProfiles = {
   focused: {
     low: {
       name: "Deep Work Drift",
-      description: "Low-distraction instrumentals for studying, coding, and quiet focus.",
-      traits: ["instrumental beats", "steady tempo", "minimal vocals"],
+      description: "Instrumental, low-distraction songs for studying, coding, or long focus sessions.",
+      traits: ["instrumental", "steady tempo", "minimal vocal distraction"],
+      query: "instrumental focus beats",
     },
     high: {
       name: "Locked In",
-      description: "Sharper, driving tracks for active problem solving and momentum.",
-      traits: ["upbeat electronic", "clean rhythm", "motivating energy"],
+      description: "Sharper, driving songs for active problem solving and high-momentum work blocks.",
+      traits: ["driving rhythm", "clean energy", "upbeat focus"],
+      query: "electronic productivity music",
     },
   },
   happy: {
     low: {
       name: "Sunny Slowdown",
-      description: "Warm, uplifting songs for a relaxed but positive mood.",
-      traits: ["acoustic pop", "light grooves", "feel-good melodies"],
+      description: "Warm, uplifting tracks with a lighter pace.",
+      traits: ["feel-good melodies", "easy listening", "warm tone"],
+      query: "feel good acoustic pop",
     },
     high: {
       name: "Main Character Energy",
-      description: "Confident, bright tracks for walking in with momentum.",
-      traits: ["dance pop", "high tempo", "bold hooks"],
+      description: "Big, bright songs that feel bold and confident.",
+      traits: ["anthem energy", "danceable", "bright hooks"],
+      query: "dance pop confidence songs",
     },
   },
   calm: {
     low: {
       name: "Quiet Reset",
-      description: "Soft tracks for unwinding, journaling, or a slow evening.",
-      traits: ["ambient textures", "soft piano", "gentle vocals"],
+      description: "Soft songs for journaling, unwinding, or resetting your head.",
+      traits: ["ambient", "soft vocals", "gentle pace"],
+      query: "ambient calm songs",
     },
     high: {
       name: "Peace With Motion",
-      description: "Balanced songs for staying centered while still moving forward.",
-      traits: ["indie pop", "smooth percussion", "clear melodies"],
+      description: "Balanced songs that stay grounded without feeling flat.",
+      traits: ["steady movement", "smooth production", "clean melodies"],
+      query: "indie pop chill upbeat",
     },
   },
   sad: {
     low: {
       name: "Reflect and Recharge",
-      description: "Gentle songs for processing emotions without feeling heavy.",
-      traits: ["emotional lyricism", "softer production", "comforting pace"],
+      description: "Thoughtful tracks for reflective moods without going fully heavy.",
+      traits: ["emotional lyricism", "comforting pace", "soft texture"],
+      query: "reflective indie songs",
     },
     high: {
       name: "Turn the Corner",
-      description: "Tracks that start reflective and lean toward hopeful energy.",
+      description: "Songs that start reflective and lean toward hopeful energy.",
       traits: ["cinematic build", "hopeful tone", "rising momentum"],
+      query: "hopeful alternative songs",
     },
   },
   confident: {
     low: {
       name: "Cool Control",
-      description: "Smooth songs that feel composed, polished, and self-assured.",
-      traits: ["alt R&B", "steady bass", "clean delivery"],
+      description: "Composed, polished songs with steady confidence.",
+      traits: ["smooth bass", "cool delivery", "low-key confidence"],
+      query: "alt rnb confidence songs",
     },
     high: {
       name: "Victory Lap",
-      description: "Bold, high-energy tracks for competing, presenting, or showing up strong.",
+      description: "Big songs for competing, presenting, or showing up strong.",
       traits: ["anthem feel", "high confidence", "strong rhythm"],
+      query: "hype songs confidence",
     },
   },
 };
@@ -81,50 +92,74 @@ function updateEnergyLabel() {
   energyLabel.textContent = `Energy: ${energyLabels[energyInput.value]}`;
 }
 
-function renderRecommendation(mood, energyValue) {
-  const band = Number(energyValue) >= 4 ? "high" : "low";
-  const recommendation = recommendations[mood][band];
+async function fetchTracks(query) {
+  const url = new URL("https://itunes.apple.com/search");
+  url.searchParams.set("term", query);
+  url.searchParams.set("media", "music");
+  url.searchParams.set("entity", "song");
+  url.searchParams.set("limit", "8");
+  url.searchParams.set("country", "us");
 
-  playlistName.textContent = recommendation.name;
-  playlistDescription.textContent = recommendation.description;
-  playlistTraits.innerHTML = recommendation.traits
-    .map((trait) => `<li>${trait}</li>`)
-    .join("");
-
-  saveHistory({
-    mood,
-    energy: energyLabels[energyValue],
-    playlist: recommendation.name,
-  });
-  renderHistory();
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("Could not reach the music catalog.");
+  }
+  const data = await response.json();
+  return data.results || [];
 }
 
-function getHistory() {
-  return JSON.parse(localStorage.getItem("playlist-history") || "[]");
-}
+function renderTracks(tracks) {
+  if (!tracks.length) {
+    tracksEl.innerHTML = "<p>No tracks found for that mood profile.</p>";
+    return;
+  }
 
-function saveHistory(entry) {
-  const nextHistory = [entry, ...getHistory()].slice(0, 5);
-  localStorage.setItem("playlist-history", JSON.stringify(nextHistory));
-}
-
-function renderHistory() {
-  const items = getHistory();
-  historyList.innerHTML = items
+  tracksEl.innerHTML = tracks
     .map(
-      (item) =>
-        `<li><strong>${item.playlist}</strong> for a ${item.energy.toLowerCase()}-energy ${item.mood} mood</li>`
+      (track) => `
+        <article class="track-card">
+          <img src="${track.artworkUrl100 || ""}" alt="${track.trackName}" />
+          <div class="track-copy">
+            <h3>${track.trackName}</h3>
+            <p>${track.artistName}<br />${track.collectionName || ""}</p>
+            <a href="${track.trackViewUrl}" target="_blank" rel="noreferrer">View in iTunes</a>
+          </div>
+        </article>
+      `
     )
     .join("");
 }
 
+async function renderRecommendation(mood, energyValue, customQuery) {
+  const band = Number(energyValue) >= 4 ? "high" : "low";
+  const recommendation = moodProfiles[mood][band];
+  const query = customQuery ? `${recommendation.query} ${customQuery}` : recommendation.query;
+
+  playlistName.textContent = recommendation.name;
+  playlistDescription.textContent = `${recommendation.description} Live query: "${query}".`;
+  playlistTraits.innerHTML = recommendation.traits.map((trait) => `<li>${trait}</li>`).join("");
+  statusEl.textContent = "Loading live results from iTunes Search API...";
+  tracksEl.innerHTML = "";
+
+  try {
+    const tracks = await fetchTracks(query);
+    renderTracks(tracks);
+    statusEl.textContent = `Loaded ${tracks.length} songs from the live catalog.`;
+  } catch (error) {
+    statusEl.textContent = error.message;
+  }
+}
+
 energyInput.addEventListener("input", updateEnergyLabel);
 
-playlistForm.addEventListener("submit", (event) => {
+playlistForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const mood = new FormData(playlistForm).get("mood");
-  renderRecommendation(mood, energyInput.value);
+  const formData = new FormData(playlistForm);
+  await renderRecommendation(
+    formData.get("mood"),
+    energyInput.value,
+    formData.get("customQuery").trim()
+  );
 });
 
 updateEnergyLabel();
-renderHistory();
